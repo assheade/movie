@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台-电影上线</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- 引入bootstrap、字体图标库 -->
+    <link rel="stylesheet" type="text/css" href="../js/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../font/css/font-awesome.css"/>
+    <style type="text/css">
+        #div-upload {
+            width: 80px;
+        }
+
+        #img_show {
+            width: 120px;
+            height: 150px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!--标题-->
+    <div class="page-header">
+        <h2 class="text-center text-primary">电影信息</h2>
+    </div>
+    <!--表单-->
+    <div id="app">
+        <div class="text-danger text-center">{{errMsg}}</div>
+        <form action="" method="post">
+            <!--电影名称-->
+            <div class="form-group row">
+                <label for="name" class="col-2 col-form-label text-right">影片名称</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="name"
+                           name="name"
+                           v-model="movie.name"
+                           v-validate="'required'">
+
+                </div>
+                <span v-show="errors.has('name')"
+                      class="text-danger">{{'请输入电影名称'}}</span>
+            </div>
+            <!--电影封面-->
+            <div class="form-group row">
+                <label for="imgfile" class="col-2 col-form-label text-right">影片封面</label>
+                <div class="col-10">
+
+                    <img :src="imgUrl" id="img_show" v-if="imgUrl">
+
+                    <div id="div-upload" @click="clickUploadDiv" class="btn btn-primary">
+                        <i class="fa fa-cloud-upload"></i>
+                    </div>
+
+                    <input type="file"
+                           id="imgfile" @change="changeFile($event)" style="display: none;"
+                           ref="myFile" name="imgfile" v-validate="'required'">
+                    <span v-show="errors.has('imgfile')" class="text-danger">{{'请上传图片'}}</span>
+                </div>
+            </div>
+            <!-- 导演-->
+            <div class="form-group row">
+                <label for="director" class="col-2 col-form-label text-right">影片导演</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="director" name="director"
+                           v-model="movie.director" v-validate="'required'">
+                </div>
+                <span v-show="errors.has('director')" class="text-danger">{{'请输入导演'}}</span>
+            </div>
+            <!-- 编剧-->
+            <div class="form-group row">
+                <label for="writer" class="col-2 col-form-label text-right">影片编剧</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="writer" name="writer"
+                           v-model="movie.writer" v-validate="'required'">
+                </div>
+                <span v-show="errors.has('writer')" class="text-danger">{{'请输入编剧'}}</span>
+            </div>
+            <!-- 主演-->
+            <div class="form-group row">
+                <label for="actor" class="col-2 col-form-label text-right">影片主演</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="actor" name="actor"
+                           v-model="movie.actor" v-validate="'required'">
+                </div>
+                <span v-show="errors.has('actor')" class="text-danger">{{'请输入主演'}}</span>
+            </div>
+            <!-- 类型-->
+            <div class="form-group row">
+                <label for="type" class="col-2 col-form-label text-right">影片类型</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="type" v-model="movie.type"
+                           name="type" v-validate="'required'">
+                </div>
+                <span v-show="errors.has('type')" class="text-danger">{{'请输入类型'}}</span>
+            </div>
+            <!--制片国家/地区-->
+            <div class="form-group row">
+                <label for="area" class="col-2 col-form-label text-right">国家/地区</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="area"
+                           v-model="movie.area"
+                           name="area" v-validate="'required'">
+                </div>
+                <span v-show="errors.has('area')" class="text-danger">{{'请输入国家/地区'}}</span>
+            </div>
+            <!-- 语言-->
+            <div class="form-group row">
+                <label for="language" class="col-2 col-form-label text-right">影片语言</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="language"
+                           name="language" v-model="movie.language" v-validate="'required'">
+                </div>
+                <span v-show="errors.has('language')" class="text-danger">{{'请输入语言'}}</span>
+            </div>
+            <!-- 上映时间-->
+            <div class="form-group row">
+                <label for="showtime" class="col-2 col-form-label text-right">上映时间</label>
+                <div class="col-6">
+                    <input type="date" class="form-control" id="showtime" v-model="movie.showtime"
+                           name="showtime" v-validate="'required'">
+                </div>
+                <span v-show="errors.has('showtime')" class="text-danger">{{'请设置时间'}}</span>
+            </div>
+            <!-- 影片片长-->
+            <div class="form-group row">
+                <label for="length" class="col-2 col-form-label text-right">影片时长</label>
+                <div class="col-10">
+                    <input type="text" class="form-control" id="length" v-model="movie.length">
+                </div>
+            </div>
+            <!-- IMDb链接-->
+            <div class="form-group row">
+                <label for="link" class="col-2 col-form-label text-right">IMDb链接</label>
+                <div class="col-10">
+                    <input type="text" class="form-control" id="link" v-model="movie.link">
+                </div>
+            </div>
+            <!-- 影片描述-->
+            <div class="form-group row">
+                <label for="description" class="col-2 col-form-label text-right">影片描述</label>
+                <div class="col-10">
+                       <textarea class="form-control" id="description"
+                                 v-model="movie.description" rows="4"
+                                 placeholder="请输入影片描述信息"></textarea>
+                </div>
+            </div>
+
+            <!-- 添加影片按钮 -->
+            <div class="form-group row">
+                <div class="col-3 offset-2">
+                    <button type="button" class=" form-control btn btn-primary" id="addBtn"
+                            @click="addMovie">添加
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="../js/vue.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/vee-validate/2.2.9/vee-validate.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/vee-validate/2.2.9/locale/zh_CN.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    //引入vue后，需要添加vee-validata的js和语言包文件(目前只用中文)
+    VeeValidate.Validator.localize('zh_CN');
+    Vue.use(VeeValidate);
+    var app = new Vue({
+        el: '#app',
+        data: {
+            movie: {},
+            imgUrl: '../img/01.jpg',
+            errMsg: ''
+        },
+        methods: {
+            clickUploadDiv() {
+                $('#imgfile').click();
+            },
+            changeFile(event) {
+                if (!event.target.files[0].size) {
+                    return;
+                } //文件大小为0
+                if (event.target.files[0].type.indexOf('image') == -1) {
+                    console.info('请选择图片');
+                } else {
+                    const that = this;
+                    const reader = new FileReader();
+                    reader.readAsDataURL(event.target.files[0]);
+                    reader.onload = function () {
+                        //读完以后，把这个结果赋值
+                        that.imgUrl = this.result;
+                    }
+                }
+            },
+            addMovie() {
+                console.info("-------addMovie函数执行---------------");
+                this.$validator.validateAll().then((result) => {
+                    console.info("-------通过表单验证---------------");
+                    if (result) {
+                        let formData = new FormData(); //创建一个表单数据(文件上传必须是post)
+                        formData.append("name", this.movie.name);
+                        formData.append("file", this.$refs.myFile.files[0]);
+                        formData.append("description", this.movie.description);
+                        formData.append("director", this.movie.director);
+                        formData.append("writer", this.movie.writer);
+                        formData.append("actor", this.movie.actor);
+                        formData.append("type", this.movie.type);
+                        formData.append("area", this.movie.area);
+                        formData.append("language", this.movie.language);
+                        formData.append("showtime", this.movie.showtime);
+                        formData.append("length", this.movie.length);
+                        formData.append("link", this.movie.link);
+
+                        console.info(formData);
+
+                        axios({
+                            method: 'post',  //请求方式 @PostMapping
+                            url: 'http://localhost:8080/movie/add', //请求地址
+                            data: formData, //填写数据
+                            headers: {
+                                'Content-Type': 'multipart/form-data'  //不设置则图片传递不到后台
+                            }
+                        }).then((res) => {
+                            console.info(res);
+                            if (res.data.success) {
+                                //添加成功
+                                alert(res.data.message + ",点击确定按钮跳转到电影列表页面!");
+                                location.href = "/movie/movieList.html";
+                            } else {
+                                //添加失败
+                                this.errMsg = '添加失败!';
+                            }
+                        });
+                    }
+
+                });
+
+
+            }
+        }
+    });
+</script>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chuanmei.movie.mapper.MovieMapper">
+
+    <!--public int insert(Movie movie);-->
+    <insert id="insert" parameterType="Movie">
+        insert into
+        tb_movie(name,img,description,director,writer,actor,type,area,language,showtime,length,link)
+        values(#{name},#{img},#{description},#{director},
+        #{writer},#{actor},#{type},#{area},#{language},#{showtime},#{length},#{link})
+    </insert>
+
+    <select id="selectByFenye" resultType="Movie">
+        select *  from tb_movie  order by id limit #{start},#{rows}
+    </select>
+
+    <select id="getTotals" resultType="long">
+        select count(*) from tb_movie
+    </select>
+
+</mapper>
+

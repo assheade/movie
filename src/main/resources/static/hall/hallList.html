@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>影厅列表</title>
+    <link rel="stylesheet" type="text/css" href="../font/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../js/bootstrap/css/bootstrap.min.css"/>
+    <style type="text/css">
+        .seats-box{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .seat-row{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .seat-row img{
+            width: 20px;
+            height: 20px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app" class="container text-center">
+    <h4 class="text-center text-primary mb-4 mt-4">影厅列表</h4>
+    <div class="row">
+        <div class="col-8 offset-2">
+            <table class="table table-bordered text-primary">
+                <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>名称</th>
+                    <th width="150px">座位</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="hall in hallList">
+                    <td>{{hall.id}}</td>
+                    <td>{{hall.name}}</td>
+                    <td>
+                        <div class="seats-box">
+                            <div v-for="row in JSON.parse(hall.seats)" class="seat-row">
+                                <div class="col" v-for="col in row">
+                                    <div v-if="col==0">
+                                        <img src="../img/wx.png">
+                                    </div>
+                                    <div v-if="col==1">
+                                        <img src="../img/yx.png">
+                                    </div>
+                                    <div v-if="col==2">
+                                        <img src="../img/zx.png">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                       <span v-if="hall.status == 0">
+                           <i class="fa fa-check-square-o text-success" aria-hidden="true">空闲</i>
+                       </span>
+                        <span v-if="hall.status == 1">
+                           <i class="fa fa-window-close-o text-danger" aria-hidden="true">已使用</i>
+                       </span>
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-success btn-sm" role="button">修改</a>
+                        <a href="#" class="btn btn-danger btn-sm" role="button">删除</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <ul class="pagination pagination-sm">
+                            <!--上一页-->
+                            <li class="page-item" :class="{'disabled':pageNum==1}">
+                                <a class="page-link" href="#" @click="findHall(pageNum-1)">
+                                    <span>&laquo;</span>
+                                </a>
+                            </li>
+                            <!--页码-->
+                            <li class="page-item"
+                                v-for="indexpage in totalPage"
+                                :key="indexpage"
+                                :class="{'active': pageNum == indexpage}">
+                                <a class="page-link" href="#" @click="findHall(indexpage)">
+                                    {{indexpage}}
+                                </a>
+                            </li>
+
+                            <!--下一页-->
+                            <li class="page-item" :class="{'disabled':pageNum == totalPage}">
+                                <a class="page-link" href="#" @click="findHall(pageNum+1)">
+                                    <span>&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+<script src="../js/jquery-3.3.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/bootstrap/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#app',
+        data: {
+            hallList: [],
+            pageNum:1, //页码
+            pageSize:2, //每页显示2条记录
+            totalPage:0, // 这个值需要请求后台数据，给这个属性赋值
+            totals:0 //总记录数，后台数据库中总共有几条，也是请求后台数据，给这个属性赋值
+        },
+        methods: {
+            findHall(indexpage) {
+                console.info(indexpage)
+                if (indexpage) {
+                    this.pageNum = indexpage; //用户点击显示哪页
+                }
+                //向后台发送请求,获取后台传递的数据
+                axios.get("http://localhost:8080/hall/fenye?pageNum="
+                    + this.pageNum + "&pageSize=" + this.pageSize).then((res) => {
+                    console.info(res);
+                    this.hallList = res.data.hallList;
+                    this.pageNum = res.data.pageNum;
+                    this.totalPage = res.data.totalPage;
+                    this.totals = res.data.totals;
+                });
+            }
+        },
+        created(){
+            this.findHall(1); //调用上面的函数
+        }
+    })
+</script>
+</html>

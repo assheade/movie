@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>后台登录页面</title>
+		<link rel="stylesheet" type="text/css" href="font/css/font-awesome.min.css" />
+		<link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/login.css" />
+	</head>
+	<body>
+
+		<div id="app">
+			<form>
+				<h4 class="text-center text-info mb-4">后台系统登录</h4>
+				<h6 class="text-center text-danger mb-2">{{errTip}}</h6>
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+						<span class="input-group-text">
+							<i class="fa fa-user fa-fw" aria-hidden="true"></i>
+						</span>
+					</div>
+					<input type="text" class="form-control" placeholder="请输入用户名" name="name"
+					v-model="admin.name">
+				</div>
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+						<span class="input-group-text">
+							<i class="fa fa-lock fa-fw" aria-hidden="true"></i>
+						</span>
+					</div>
+					<input type="text" class="form-control" placeholder="请输入密码" name="pwd"
+					v-model="admin.pwd">
+				</div>
+				<button type="button" class="btn btn-info form-control" @click="login">登录</button>
+			</form>
+		</div>
+
+	</body>
+
+	<script src="js/jquery-3.3.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		//每个 Vue 应用都需要通过实例化 Vue 来实现
+		var app = new Vue({
+			el:'#app',
+			data:{
+				admin:{},
+				errTip:''
+			},
+			methods:{
+				login(){
+					console.info(this.admin);
+					//请求后台的服务器Controller中的方法
+					// axios.post('请求路径',参数值).then((res)=>{...});
+					axios.post('http://localhost:8080/admin/login',this.admin).then((res)=>{
+						if(res.data.success){
+							location.href="index.html";
+						}else{
+                            this.errTip=res.data.message;
+						}
+					});
+				}
+			}
+		})
+		
+	</script>
+
+</html>

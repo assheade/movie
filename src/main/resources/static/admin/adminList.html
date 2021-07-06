@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>后台管理员列表</title>
+		<link rel="stylesheet" type="text/css" href="../font/css/font-awesome.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../js/bootstrap/css/bootstrap.min.css"/>
+	</head>
+	<body>
+		<div id="app" class="container text-center">
+			<h4 class="text-center text-primary mb-4 mt-4">管理员列表</h4>
+			<div class="row">
+				<div class="col-8 offset-2">
+					<table class="table table-bordered text-primary">
+					    <thead>
+					      <tr>
+					        <th>编号</th>
+					        <th>用户名</th>
+					        <th>密码</th>
+							<th>电话</th>
+							<th>状态</th>
+							<th>操作</th>
+					      </tr>
+					    </thead>
+					    <tbody>
+					      <tr v-for="admin in adminList">
+					        <td>{{admin.id}}</td>
+					        <td>{{admin.name}}</td>
+					        <td>{{admin.pwd}}</td>
+							<td>{{admin.tel}}</td>
+							<td>{{admin.status}}</td>
+							<td>
+								<a href="#" class="btn btn-success btn-sm" role="button">修改</a>
+								<a href="#" class="btn btn-danger btn-sm" role="button">删除</a>
+							</td>
+					      </tr>
+					    </tbody>
+					</table>
+				</div>
+			</div>
+			
+		</div>
+	</body>
+	<script src="../js/jquery-3.3.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/bootstrap/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+		var app = new Vue({
+			el: '#app',
+			data: {
+				adminList: []
+			},
+			methods: {
+				findAllAdmin: function () {
+					//向后台服务器发送ajax请求
+					//axios.get('请求路径').then((res)=>{...});
+					axios.get('http://localhost:8080/admin/adminList').then((res)=>{
+						console.info(res);
+						this.adminList = res.data.data;
+					});
+
+				}
+			},
+			created(){
+				this.findAllAdmin(); //调用上面的函数
+			}
+		})
+	</script>
+</html>

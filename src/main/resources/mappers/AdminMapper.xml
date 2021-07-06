@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chuanmei.movie.mapper.AdminMapper">
+
+    <insert id="insert" parameterType="Admin">
+        insert into tb_admin(name,pwd,tel) values(#{name},#{pwd},#{tel})
+    </insert>
+
+   <!-- public List<Admin> selectAll();-->
+    <select id="selectAll" resultType="Admin">
+        select id,name,pwd,tel,status from tb_admin
+    </select>
+
+   <!-- public Admin selectAdmin(Admin admin);-->
+    <select id="selectAdmin" parameterType="Admin" resultType="Admin">
+        select id,name,pwd,tel,status from tb_admin where name=#{name} and pwd=#{pwd}
+    </select>
+
+</mapper>

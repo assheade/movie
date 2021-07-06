@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>后台-主页面</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- 引入bootstrap、字体图标库 -->
+	<link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="font/css/font-awesome.css"/>
+	<style type="text/css">
+		/*iframe的大小*/
+		#mainFrame{
+			width: 100%;
+			height: 100%;
+			margin-top: 30px;
+		}
+
+		#menu_demo{
+			margin-top: 30px;
+			border: none;
+			border-radius: 0;
+			min-height: 1200px;
+		}
+
+		#menu_demo .card{
+			border-radius: 0;
+		}
+		#menu_demo .card  .card-header{
+			padding: 8px; /*内边距*/
+		}
+
+		#menu_demo .card  .card-body{
+			padding: 0;
+		}
+		#menu_demo .card  .card-body .list-group{
+			margin-bottom: 0;
+		}
+	</style>
+</head>
+<body class="bg-light">
+
+<!-- 头部信息 -->
+<nav class="navbar navbar-light bg-secondary">
+	<a class="navbar-brand" href="#">
+		<img src="img/user.png" width="30" height="30"
+			 class="d-inline-block align-top" alt="" loading="lazy">
+		Movie后台管理
+	</a>
+	<a class="navbar-brand" href="#">
+		安全退出
+	</a>
+</nav>
+
+
+<!-- 菜单和正文布局 -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-2">
+			<!-- 菜单 start -->
+			<div class="accordion" id="menu_demo">
+				
+				<div class="card">
+					<div class="card-header" id="subMenu1">
+						<h2 class="mb-0">
+							<button class="btn btn-link btn-block text-center"
+									type="button" data-toggle="collapse"
+									data-target="#adminManager" aria-expanded="true" aria-controls="adminManager">
+								管理员模块
+							</button>
+						</h2>
+					</div>
+
+					<div id="adminManager" class="collapse show" aria-labelledby="subMenu1" data-parent="#menu_demo">
+						<div class="card-body">
+							<ul class="list-group list-unstyled text-center">
+								<li class="list-group-item">
+									<a href="admin/addAdmin.html" target="main">新增管理员</a>
+								</li>
+								<li class="list-group-item">
+									<a href="admin/adminList.html" target="main">管理员列表</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="subMenu2">
+						<h2 class="mb-0">
+							<button class="btn btn-link btn-block text-center collapsed"
+									type="button" data-toggle="collapse" data-target="#movieManager"
+									aria-expanded="false" aria-controls="movieManager">
+								影片管理
+							</button>
+						</h2>
+					</div>
+					<div id="movieManager" class="collapse show" aria-labelledby="subMenu2" data-parent="#menu_demo">
+						<div class="card-body">
+							<ul class="list-group list-unstyled text-center">
+								<li class="list-group-item">
+									<a href="movie/addMovie.html" target="main">电影上线</a>
+								</li>
+								<li class="list-group-item">
+									<a href="movie/movieList.html" target="main">电影列表</a>
+								</li>
+								<li class="list-group-item">
+									<a href="movie/plan.html" target="main">电影排片</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="subMenu3">
+						<h2 class="mb-0">
+							<button class="btn btn-link btn-block text-center collapsed"
+									type="button" data-toggle="collapse" data-target="#hallManager"
+									aria-expanded="false" aria-controls="hallManager">
+								影厅管理
+							</button>
+						</h2>
+					</div>
+					<div id="hallManager" class="collapse show" aria-labelledby="subMenu3" data-parent="#menu_demo">
+						<div class="card-body">
+							<ul class="list-group list-unstyled text-center">
+								<li class="list-group-item">
+									<a href="hall/addHall.html" target="main">添加影厅</a>
+								</li>
+								<li class="list-group-item">
+									<a href="hall/hallList.html" target="main">影厅列表</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="subMenu4">
+						<h2 class="mb-0">
+							<button class="btn btn-link btn-block text-center collapsed"
+									type="button" data-toggle="collapse" data-target="#userManager"
+									aria-expanded="false" aria-controls="userManager">
+								用户模块
+							</button>
+						</h2>
+					</div>
+					<div id="userManager" class="collapse show" aria-labelledby="subMenu4" data-parent="#menu_demo">
+						<div class="card-body">
+							<ul class="list-group list-unstyled text-center">
+								<li class="list-group-item">
+									<a href="user/userList.html" target="main">用户列表</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- 菜单 end -->
+		</div>
+		<div class="col-10">
+			<!-- 右侧正文 start -->
+			<iframe src="admin/adminList.html" name="main" id="mainFrame" frameborder="0"></iframe>
+			<!-- 右侧正文 end -->
+		</div>
+	</div>
+</div>
+
+</body>
+</html>
+<script src="js/vue.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/bootstrap/js/bootstrap.min.js"></script>

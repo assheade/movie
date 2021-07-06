@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加影厅</title>
+	<link rel="stylesheet" type="text/css" href="../font/css/font-awesome.min.css"/>
+	<link rel="stylesheet" type="text/css" href="../js/bootstrap/css/bootstrap.min.css"/>
+</head>
+<body>
+	
+	<div class="container">
+		<div class="page-header">
+			<h4 class="text-center text-primary mb-4 mt-4">添加影厅</h4>
+		</div>
+		<div id="app">
+			<h6 class="text-center text-danger mb-2">{{errTip}}</h6>
+			<form>
+				 <div class="form-group row">
+				    <label for="name" class="col-2 col-form-label text-right">名称</label>
+				     <div class="col-6">
+						 <input type="text" class="form-control" id="name" name="name" v-model.lazy="hall.name">
+					 </div>
+					 <div class="col-4" v-html="tip">
+
+					 </div>
+				  </div>
+				  <div class="form-group row">
+				    <label  class="col-2 col-form-label text-right">座位</label>
+				    <div class="col-8">
+						 <ul id="seats_ul" class="list-unstyled" >
+						 	 <li class="row" v-for="(row,index) in rowCount" :key="row.id">
+								 <div class="col-8">
+									 <select class="form-control seat_row">
+									 		 <option v-for="i of 10" :key="i">{{i}}</option>
+									 </select>
+								 </div>
+								 <div class="col-2">
+									 <button type="button" class="btn btn-danger btn-sm" @click="delRow(index)">
+										 <i class="fa fa-trash-o" aria-hidden="true"></i>
+									 </button>
+								 </div>
+							 </li>
+						 </ul>
+					</div>
+					<div class="col-2">
+						<button type="button" class="btn btn-success" @click="addRow">
+							<i class="fa fa-plus-square" aria-hidden="true"></i>添加一行座位
+						</button>
+					</div>
+				  </div>
+				  <div class="form-group row">
+				     <div class="col-3 offset-2">
+						   <button type="button" class="btn btn-primary" @click="addHall" id="addHallBtn"
+						   disabled>添加</button>
+					 </div>
+				  </div>
+				
+			</form>
+		</div>
+	</div>
+
+</body>
+<script src="../js/jquery-3.3.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/bootstrap/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+		//每个 Vue 应用都需要通过实例化 Vue 来实现
+		var app = new Vue({
+			el:'#app',
+			data:{
+				hall:{},//输入框中绑定了 v-model的值 v-model="hall.name"
+				rowCount:[{id:0}, {id:1}], // 行的计数器，默认2行，使用 v-for 遍历 rowCount
+				tip:'',
+				errTip:'',
+				id: 1
+			},
+			methods:{
+				addRow(){
+					this.rowCount.push({id:++this.id}); //添加一行，就相当于向计数器数组中添加一个{}对象
+				},
+				delRow(index){
+					//删除数组中的行
+					console.info(index);
+					this.rowCount.splice(index,1);
+				},
+				addHall(){
+					var seats=[];
+					$(".seat_row").each(function(index,ele){
+						var colSize =parseInt($(this).val());
+						var tempArr=[];
+						for (var i = 0; i < colSize; i++) {
+							tempArr.push(0);
+						}
+						seats.push(tempArr);
+					});
+					console.info(seats);//[[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]]
+					this.hall.seats=JSON.stringify(seats); // 将对象转换成字符串
+					console.info(this.hall);
+					//发送ajax请求
+					// axios.post('请求路径',参数值).then((res)=>{...});
+					axios.post('http://localhost:8080/hall/add',this.hall).then((res)=>{
+						if(res.data.success){
+							location.href="/hall/hallList.html";
+						}else{
+							this.errTip=res.data.message;
+						}
+					});
+				},
+				checkName:function(val){
+					var that =  this;
+					// 延迟2秒后发送ajax请求
+					setTimeout(function(){
+						if(val!=null && val!=""){
+							//ajax请求
+							axios.get('http://localhost:8080/hall/checkHallName?name='+val).then((res)=>{
+								if(res.data.success){
+									// true可以使用，数据库中不存在
+									that.tip='<i class="fa fa-check text-success" aria-hidden="true"></i>';
+									$("#addHallBtn").removeAttr('disabled'); // 开启添加按钮
+								}else{
+									// false,说明数据库中已经存在了这个影厅
+									that.tip='<i class="fa fa-times text-danger" aria-hidden="true">已存在,请重新输入</i>';
+									$("#addHallBtn").attr('disabled',true); //禁用添加按钮
+								}
+							});
+						}
+					},2000);
+				}
+			},
+			watch:{
+				//watch的作用可以监视一个值的变化
+				"hall.name":function(val){
+                   this.checkName(val);
+                   //修改提示信息
+					this.tip='<i class="fa fa-spinner text-warning" aria-hidden="true">正在验证中....</i>';
+				}
+			}
+		})
+		
+	</script>
+</html>
